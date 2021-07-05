@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  # Database
+  anna_uk_db:
+    container_name: anna_uk_db_container
+    image: mysql:5.7
+    volumes:
+      - anna_uk_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: H@rekr!shna@27_34Gy7
+      MYSQL_DATABASE: anna_uk
+      MYSQL_USER: phanikiran_673F2
+      MYSQL_PASSWORD: Kr!shnaH@re_34G6
+    networks:
+      - wpsite
+  # phpmyadmin
+  anna_uk_db_admin:
+    container_name: anna_uk_db_admin_container
+    depends_on:
+      - anna_uk_db
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - '8098:80'
+    environment:
+      PMA_HOST: anna_uk_db
+      MYSQL_ROOT_PASSWORD: H@rekr!shna@27_34Gy7
+    networks:
+      - wpsite
+  # Wordpress
+  anna_uk_web:
+    container_name: anna_uk_web_container
+    depends_on:
+      - anna_uk_db
+    image: wordpress:latest
+    ports:
+      - '8092:80'
+    restart: always
+    volumes:
+      - anna_uk_web_data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: anna_uk_db:3306
+      WORDPRESS_DB_USER: phanikiran_673F2
+      WORDPRESS_DB_PASSWORD: Kr!shnaH@re_34G6
+      WORDPRESS_DB_NAME: anna_uk
+      WORDPRESS_TABLE_PREFIX: wp_tab_
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'http://66.29.128.84:8092');
+        define('WP_SITEURL', 'http://66.29.128.84:8092');
+    networks:
+      - wpsite
+networks:
+  wpsite:
+volumes:
+  anna_uk_data: {}
+  anna_uk_web_data: {}
